@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+
+	<head>
+	
+		<meta charset="utf-8" />
+		<title>Cube Man Adventure</title>
+		
+		<link rel="icon" href="./cube man.ico" type="image/x-icon">
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@500&display=swap" rel="stylesheet"> 
+		
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+
+	<body> 
+		<div class="main">
+			<h1><div align="center" style="font-size: 15pt ; ">
+				Cube Man Adventure</div>
+			</h1>
+			
+			<h3><div align="center" style="font-size: 15pt ; ">
+				After selecting the difficulty, click play ↓↓↓</div>
+			</h3>
+			
+			<div class="buttons">
+				<div align="center" style="font-size: 15pt ; ">
+			
+				<button id="easyButton" class="btn btn1" onClick="easy()">
+				<font color="#0000FF">EASY</font>
+				<button id="hardButton" class="btn btn1" onClick="hard()">
+				<font color="#0000FF">HARD</font>
+			</div>
+			<br /><br/>
+			<div class="paly"><div align="center" style="font-size: 0pt ; ">
+				<button id="playButton" class="btn btn1" onClick="play()" disabled="true">
+				<font color="#000000">PLAY!</font></div>
+				</button>
+			</div>
+		  	  
+		<div class="instructions">
+			<h3><i><div align="right" style="font-size: 13pt ; ">
+				<font color="#0000FF">The cube man entered the multiverse accidentally, he needs to find exit as soon as he can.</font>
+			</h3><i></div>
+
+		    <h3><i><div align="right" style="font-size: 13pt ; ">
+				<font color="#0000FF">Arrows or WASD of keyboard can control cube man movement.</font>
+		    </h3><i></div>
+
+			<h3><i><div align="right" style="font-size: 13pt ; ">
+				<font color="#0000FF">There are many interesting things and beautiful scenery in this world.</font>
+			</h3><i></div>
+
+			<h3><i><div align="right" style="font-size: 13pt ; ">
+				<font color="#0000FF">Please enjoy your adventure</font>
+		    </h3><i></div>
+			<div>
+				<h3><i><div align="right" style="font-size: 13pt ; ">
+					<font color="#0000FF">Hint: When you can't move, you can look around by dragging the mouse!!</font>
+			</h3><i></div>
+			</h4></div>
+			<h6><i><div align="right" style="font-size: 13pt ; ">
+				Declaration:The gameplay and models of this game are for educational purposes only
+			</h6><i></div>
+
+		</div>
+			
+		</div>
+		
+		<script type="text/javascript">
+		
+			function easy(){
+			
+				sessionStorage.setItem("easy", "true");
+				sessionStorage.setItem("hard", "false");
+				easyButton.disabled = true;
+				hardButton.disabled = false;
+				playButton.disabled = false;
+				
+			}
+			
+		</script>
+		
+		<script type="text/javascript">
+		
+			function hard(){
+			
+				sessionStorage.setItem("hard", "true");
+				sessionStorage.setItem("easy", "false");
+				easyButton.disabled = false;
+				hardButton.disabled = true;
+				playButton.disabled = false;
+				
+			}
+			
+		</script>
+		
+		<script type="text/javascript">
+		
+			function play(){
+				window.location.href = "./main.html";
+			}
+			
+		</script>
+	</body>
+</html>

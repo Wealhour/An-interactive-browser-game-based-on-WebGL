@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html>
+
+	<head>
+	
+		<meta charset="utf-8" />
+		<title>Cube Man Adventure</title>
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@500&display=swap" rel="stylesheet"> 
+		
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="icon" href="./cube man.ico" type="image/x-icon">
+	</head>
+
+	<body> 
+<div class ="congratulation">
+	<h1><div align="left" style="font-size: 15pt ; ">
+		You found the exit finally,the time cost is:
+	</h1>
+
+
+
+
+		<div class="main">
+			
+		<div class="time" id="time">
+
+		</div>	
+			<div class="playAgain">
+				<button id="playAgainButton" class="btn btn1" onClick="playAgain()">
+				<font color="#0000FF">PLAY AGAIN!</font>
+				</button>
+			</div>
+			
+		</div>
+		
+		<script>
+			
+			document.getElementById("time").innerHTML += "<h2>" + sessionStorage.getItem("duration") + "</h2>";
+			
+			if( sessionStorage.getItem("duration") > 15 ){
+				document.getElementById("time").innerHTML += "<h4> It seems that you prefer to enjoy the scenery </h4>";
+			} 
+			else if( sessionStorage.getItem("duration") <= 15 && sessionStorage.getItem("duration")>10){
+
+				document.getElementById("time").innerHTML += "<h4> Congratulations! this is a good result </h4>";
+			}
+			else
+				{document.getElementById("time").innerHTML += "<h4> Practice makes perfect! </h4>";}
+			
+			
+		 </script>
+		
+		<script type="text/javascript">
+		
+		
+		
+			function playAgain(){
+				
+				window.location.href = "./index.html";
+				
+			}
+			
+		</script>
+		
+	</body>
+</html>

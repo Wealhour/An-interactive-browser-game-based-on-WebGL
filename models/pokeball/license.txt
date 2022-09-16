@@ -1,0 +1,11 @@
+Model Information:
+* title:	Pokémon Poké Ball
+* source:	https://sketchfab.com/3d-models/pokemon-poke-ball-9f63803d93714eadaa869c23cee0581d
+* author:	Jay Salton (https://sketchfab.com/jaysalton)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Pokémon Poké Ball" (https://sketchfab.com/3d-models/pokemon-poke-ball-9f63803d93714eadaa869c23cee0581d) by Jay Salton (https://sketchfab.com/jaysalton) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

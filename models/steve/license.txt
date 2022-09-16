@@ -1,0 +1,11 @@
+Model Information:
+* title:	Steve
+* source:	https://sketchfab.com/3d-models/steve-27fab6181ffa4fae9c69eb097630eaf3
+* author:	seaneoo (https://sketchfab.com/seaneoo)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Steve" (https://sketchfab.com/3d-models/steve-27fab6181ffa4fae9c69eb097630eaf3) by seaneoo (https://sketchfab.com/seaneoo) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)

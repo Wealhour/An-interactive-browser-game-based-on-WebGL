@@ -1,0 +1,11 @@
+Model Information:
+* title:	Mushroom Friend
+* source:	https://sketchfab.com/3d-models/mushroom-friend-de9cc47fae19421a84db8192dc3cd92e
+* author:	Rick Hoppmann (https://sketchfab.com/tinyruin)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Mushroom Friend" (https://sketchfab.com/3d-models/mushroom-friend-de9cc47fae19421a84db8192dc3cd92e) by Rick Hoppmann (https://sketchfab.com/tinyruin) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
