@@ -6,7 +6,7 @@ The gameplay and original models are for educational purposes only.
 
 ## Link to play the game
 
-- [Original project](https://sapienzainteractivegraphicscourse.github.io/final-project-weal_mce/) · [Preserved original](https://wealhour.github.io/An-interactive-browser-game-based-on-WebGL/original/)
+- [Original project](https://sapienzainteractivegraphicscourse.github.io/final-project-weal_mce/) · 
 - [Remastered game](https://wealhour.github.io/An-interactive-browser-game-based-on-WebGL/remastered/)
 
 ## How to play
