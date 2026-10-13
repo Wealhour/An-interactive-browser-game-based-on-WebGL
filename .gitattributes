@@ -1,0 +1,5 @@
+* text=auto
+
+# Keep the student archive byte-for-byte intact on every operating system.
+original/** -text
+remastered/vendor/three.module.js -text

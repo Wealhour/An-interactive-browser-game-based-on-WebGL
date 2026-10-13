@@ -1,0 +1,287 @@
+[
+  {
+    "bytes": 1245932,
+    "path": "ammo.js",
+    "sha256": "fa600f3a44ea72e7ba4920feb5b669023468ebed02730b538869782e002a6f70"
+  },
+  {
+    "bytes": 164475,
+    "path": "background.jpg",
+    "sha256": "5e6d4841d9863f20f23ede901b295bc72029be50c24b307d46de62f2dd1a4016"
+  },
+  {
+    "bytes": 2462,
+    "path": "cube man.ico",
+    "sha256": "52fb6cc386301e1c528f7579330aff0438980e435d8aaf7306ac8c651005b785"
+  },
+  {
+    "bytes": 1642,
+    "path": "finish.html",
+    "sha256": "cc904797d4f19050e9dfc304833d85c29beac74292d9eed32ef19192d2b7d613"
+  },
+  {
+    "bytes": 1114,
+    "path": "gameover.html",
+    "sha256": "362acf7fe274249ac7273b94535b98643e16fbf3db075d9207ac87013b5bf9b2"
+  },
+  {
+    "bytes": 1184,
+    "path": "gameover2.html",
+    "sha256": "76d76ebc2093b27356560a7e4c90408da2f09e447ec7a2378a9d3dcd0a5a743f"
+  },
+  {
+    "bytes": 3066,
+    "path": "index.html",
+    "sha256": "9d270ce519c23202efef312c8d5c28b6fa64aacf7be0a5a1176ac5deaba567e9"
+  },
+  {
+    "bytes": 205084,
+    "path": "info.jpg",
+    "sha256": "bb20ce8efecf2e8575658766ccdbed8417553db68890ddadc4288d630cfa37f0"
+  },
+  {
+    "bytes": 209504,
+    "path": "loading.jpg",
+    "sha256": "a70f74bcebaf4c66cc4ccf353b6adc568d0dfb7b6fb2e9d3d549749b49617918"
+  },
+  {
+    "bytes": 873,
+    "path": "main.html",
+    "sha256": "e1c892cf0750f2620c1b04cbff2edfc4ee7d926d72172a403a8b0a329b2ce38e"
+  },
+  {
+    "bytes": 40292,
+    "path": "physijs_worker.js",
+    "sha256": "1f6d9b2958bdbcc374686b16f3cc4e5e22695067f5601c6c495fdc7842d8e293"
+  },
+  {
+    "bytes": 338,
+    "path": "README.md",
+    "sha256": "d16ed9092801c83a4897cf13acfc7e4abe95cd5eb28f0a7af99dea510641e92d"
+  },
+  {
+    "bytes": 239,
+    "path": "css/main.css",
+    "sha256": "f99e6058266f6a1fd7946d4d232173ed9af74eba64bc4eb5e0be2482e8c4214b"
+  },
+  {
+    "bytes": 302,
+    "path": "css/style.css",
+    "sha256": "a61126a42585e8bc44a93deaaa64ad2e13d499c1e0e89c4683c0a68399816e73"
+  },
+  {
+    "bytes": 9668,
+    "path": "js/animations.js",
+    "sha256": "04a5ea65e69cfcc1f2634ba4112f91f5b905ac9b69e27c8fd80c0c2fd2351d1b"
+  },
+  {
+    "bytes": 13813,
+    "path": "js/environment.js",
+    "sha256": "c33680fdbf63754dd64c4320c1b4f57d7ca884c4e0354f45d30eba1f397f221a"
+  },
+  {
+    "bytes": 11888,
+    "path": "js/main.js",
+    "sha256": "3a85d6a6227d6d37caa505475c772212bc32c470c8bfd6cdd28e0d20cad62e45"
+  },
+  {
+    "bytes": 1494,
+    "path": "js/variables.js",
+    "sha256": "94267282beeade1798d7f0961b78d53db8480ac1de80bf421f3e49adec419627"
+  },
+  {
+    "bytes": 1245932,
+    "path": "js/libs/ammo.js",
+    "sha256": "fa600f3a44ea72e7ba4920feb5b669023468ebed02730b538869782e002a6f70"
+  },
+  {
+    "bytes": 6888,
+    "path": "js/libs/FirstPersonControls.js",
+    "sha256": "961e16bc0924764031e23735bcd74d1228ea73449f3d976004219b8b2751f51d"
+  },
+  {
+    "bytes": 87117,
+    "path": "js/libs/GLTFLoader.js",
+    "sha256": "adf0ad103faf898e93e0456b5533458992224aa139f732ca0f87f94be05e9308"
+  },
+  {
+    "bytes": 25089,
+    "path": "js/libs/OrbitControls.js",
+    "sha256": "e5bce5d458e4b73e9f6b3710a8354ed433e897f29bb4cab4814ebb355cc5520e"
+  },
+  {
+    "bytes": 44464,
+    "path": "js/libs/physi.js",
+    "sha256": "aa0d04513fd60889fac575603a0b515d733a827ba07337d2da212409487125d0"
+  },
+  {
+    "bytes": 40292,
+    "path": "js/libs/physijs_worker.js",
+    "sha256": "1f6d9b2958bdbcc374686b16f3cc4e5e22695067f5601c6c495fdc7842d8e293"
+  },
+  {
+    "bytes": 1255477,
+    "path": "js/libs/three.js",
+    "sha256": "a9a40e1509d66719a4b45a11702894c0128f0193bff3be0e7f5431401725d71d"
+  },
+  {
+    "bytes": 626297,
+    "path": "js/libs/three.min.js",
+    "sha256": "32852220c3a1997f31f90cea544b94fd1dedeae33c1fb06bf9227a861b1819bf"
+  },
+  {
+    "bytes": 1209681,
+    "path": "js/libs/three.module.js",
+    "sha256": "8b439a61fbb660e20191be95302375815cee141dfde2ebf8bd6bc2fe0ab2b582"
+  },
+  {
+    "bytes": 27838,
+    "path": "js/libs/tween.esm.js",
+    "sha256": "b90e1e4c0edf5551ec57f43e4c9bd824a40da56de5e18fd45a9f7dae44479cad"
+  },
+  {
+    "bytes": 666,
+    "path": "models/gastly/license.txt",
+    "sha256": "f1ef03d900b3ef9412006ad5ae93ccecd0b4cd0ab41701fa5dcb3b8ce94277bf"
+  },
+  {
+    "bytes": 2392352,
+    "path": "models/gastly/scene.bin",
+    "sha256": "ab405793522f221f4648383f25a85ef8d1ee28241fef5fda61244e3158f8523b"
+  },
+  {
+    "bytes": 16579,
+    "path": "models/gastly/scene.gltf",
+    "sha256": "67dbb310bb81bc2e7af11cda7d937378f0a9ea681c04845e00bf8b4085f6178b"
+  },
+  {
+    "bytes": 7266,
+    "path": "models/gastly/textures/Material.004_baseColor.png",
+    "sha256": "042bacbe56699637ec061a84aa0d0579673d302a15f23e9bd474d137ddf10672"
+  },
+  {
+    "bytes": 694,
+    "path": "models/mushroom/license.txt",
+    "sha256": "f5ad3af1db400ee5eee47f897cef17d391fb00c8359470cb8c075a5557185957"
+  },
+  {
+    "bytes": 27512,
+    "path": "models/mushroom/scene.bin",
+    "sha256": "5f035e58fae10b5e63b5cfa35983da34907da7ebeeff8d895cedc72ec57fe88a"
+  },
+  {
+    "bytes": 4206,
+    "path": "models/mushroom/scene.gltf",
+    "sha256": "fd52e8f7a4e2a2b5ca80c65068068f42417e86dad6fb05cf5aa9058267755528"
+  },
+  {
+    "bytes": 184010,
+    "path": "models/mushroom/textures/mushroom_friend_baseColor.png",
+    "sha256": "7d77135ccedfb36986dcb557af3938946253d7d3244b17b617d9bda4772484f1"
+  },
+  {
+    "bytes": 698,
+    "path": "models/pokeball/license.txt",
+    "sha256": "ed16ad368e90eacbf57cf2137ab721f30c86d022f8882e6c7455319bfe278d50"
+  },
+  {
+    "bytes": 51008,
+    "path": "models/pokeball/scene.bin",
+    "sha256": "dc6dfccd0eef5c0d4f83615356f3d106cc1b1d5be094e1512809f102e27cd641"
+  },
+  {
+    "bytes": 6723,
+    "path": "models/pokeball/scene.gltf",
+    "sha256": "6f2d0ea8064a9ffd05ac334c70063bf9b920f5d2e9b7eb6a5ca4ade03ca8095f"
+  },
+  {
+    "bytes": 694,
+    "path": "models/steve/license.txt",
+    "sha256": "b8acab1b2d0b7ffc84c0273f39ce043d4e2ff5aedaa06de38f39429e860773bf"
+  },
+  {
+    "bytes": 5832,
+    "path": "models/steve/scene.bin",
+    "sha256": "24b6805c78a6272d6e835ac31cb903fd0bc7a7a1e1cd76a7925fd42a72fc0db4"
+  },
+  {
+    "bytes": 17398,
+    "path": "models/steve/scene.gltf",
+    "sha256": "616b0cc04031999300a7ef53daf53ee388f5e791fba67dcf6177844c76e126ea"
+  },
+  {
+    "bytes": 1191,
+    "path": "models/steve/textures/material_0_baseColor.png",
+    "sha256": "af6fd0ada2613ad516789f26f457a6636106a213d7f5ccb5c18489e658247169"
+  },
+  {
+    "bytes": 250,
+    "path": "textures/Brick_wall.png",
+    "sha256": "3b2e8276764f209bca64eed2372d2155aba23046dddbe062b369f611595b0356"
+  },
+  {
+    "bytes": 136,
+    "path": "textures/finish.png",
+    "sha256": "062699858139c2bfe38baff040d60ddb92f0068294e5a09e981597786c68e97f"
+  },
+  {
+    "bytes": 205555,
+    "path": "textures/grass.jpg",
+    "sha256": "3012217fb97ff03a6af812d86580f94c4bd81ef1c1b9b3db42d4563ad91dc323"
+  },
+  {
+    "bytes": 9059,
+    "path": "textures/grass.png",
+    "sha256": "4c9c7dcf825efd685b5c8bf2d7154abd0606cc256c6ed8959e31030e3f5e45f6"
+  },
+  {
+    "bytes": 720008,
+    "path": "textures/ground.jpg",
+    "sha256": "8904fddad10cac6d102f921d2d4b8827b44d19c13c4327e1bfe038ad5626ec3a"
+  },
+  {
+    "bytes": 897,
+    "path": "textures/leafe.png",
+    "sha256": "68dfbb7283999e785faae5c56a9862f7fe29f407e67b6ada4399a2a9aa91bc10"
+  },
+  {
+    "bytes": 1556,
+    "path": "textures/leafes.jpg",
+    "sha256": "fa2c730cc6facbd5c1bbe742af5e066ef13ac9ba632ae0d0f0c4dc7985e9aedb"
+  },
+  {
+    "bytes": 35415,
+    "path": "textures/Old_ground.jpg",
+    "sha256": "0d2e80cbb9fc0feb65c459a2ba6364f854b9680fe60aa883fd9a9446aafce779"
+  },
+  {
+    "bytes": 5598,
+    "path": "textures/rock.jpeg",
+    "sha256": "c89a6c432f9cd8bee3a82b60c0ce326d809194a97ab4f3a531d07ab40e0e3551"
+  },
+  {
+    "bytes": 129864,
+    "path": "textures/texture-bump.jpg",
+    "sha256": "29bc530dd8b96f1e2200355aa7ec2e71c53c8d609c0bbf6deba2769025b68d1d"
+  },
+  {
+    "bytes": 854307,
+    "path": "textures/underground.jpg",
+    "sha256": "71dcbfd6e7f2f4f9070e7aa6c29b5323fc078c09550cd0d3b0e79744330e2610"
+  },
+  {
+    "bytes": 2202,
+    "path": "textures/underground.png",
+    "sha256": "a6aeb6fe5f52deade61a2425d82482b3f1c4970a1a1ac705dc1c3a2fd19f96bf"
+  },
+  {
+    "bytes": 8667,
+    "path": "textures/wood.jpg",
+    "sha256": "5420c100d756212fe49f0ad926531db63d77e7ebc4b79fc4973a4e381d62d6dd"
+  },
+  {
+    "bytes": 661,
+    "path": "textures/wood.png",
+    "sha256": "44ed0cf178a8eb17e9b839937e5f5a655a09f99dffe17726482bf547f2cf2250"
+  }
+]
