@@ -1,4 +1,40 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101e20"><meta name="description" content="Cube Man Adventure by Weihao Wang: the original student project, preserved, and a new remastered WebGL adventure."><title>Cube Man Adventure — Two editions, one journey</title><link rel="icon" href="remastered/icon.svg"><style>
-*{box-sizing:border-box}body{margin:0;background:#101e20;color:#f0f0df;font:14px 'Segoe UI',Arial,sans-serif}main{max-width:1150px;margin:auto;padding:65px 35px 35px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffffff20;padding-bottom:25px}header a{color:#a5b9ab;text-decoration:none;font-size:11px}.brand{display:flex;align-items:center;gap:12px;letter-spacing:2px;font-size:13px}.brand img{width:34px}h1{font:normal clamp(40px,5.5vw,67px)/1.1 Georgia,serif;letter-spacing:-2px;margin:55px 0 20px}h1 em{color:#c6f38c;font-weight:normal}.intro{color:#9fb3a6;line-height:1.9;max-width:600px;margin-bottom:35px}.editions{display:grid;grid-template-columns:1fr 1fr;gap:25px}.edition{border:1px solid #ffffff20;border-radius:6px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s}.edition:hover{transform:translateY(-4px);border-color:#c6f38c}.edition img{width:100%;height:250px;object-fit:cover;display:block}.edition.new img{object-position:top}.edition>div{padding:28px;background:#152527}.edition small{font-size:8px;letter-spacing:2px;color:#c6f38c}.edition h2{font:28px Georgia,serif;margin:12px 0}.edition p{font-size:12px;line-height:1.8;color:#99afa2;min-height:44px}.edition span{display:block;margin-top:22px;color:#c6f38c;font-size:12px}.new{border-color:#c6f38c70}footer{border-top:1px solid #ffffff20;margin-top:40px;padding-top:22px;color:#8ba193;font-size:10px;line-height:1.9}footer a{color:#c6f38c}a:focus-visible{outline:2px solid #c6f38c;outline-offset:5px}@media(max-width:700px){main{padding:30px 22px}header a{font-size:9px}.brand{font-size:11px}h1{margin-top:40px}.editions{grid-template-columns:1fr}.edition img{height:210px}}
-</style></head><body><main><header><div class="brand"><img src="remastered/icon.svg" alt="">CUBE MAN ADVENTURE</div><a href="https://github.com/Wealhour/An-interactive-browser-game-based-on-WebGL">View on GitHub ↗</a></header><h1>One adventure.<br>Two <em>chapters.</em></h1><p class="intro">Every project starts somewhere. This one started with a student, a cube, and a little curiosity. Keep a memory of the beginning, or step into a whole new world.</p><div class="editions"><a class="edition" href="original/"><img src="original/info.jpg" alt="Original Cube Man Adventure artwork and keyboard controls"><div><small>THE ORIGINAL / PRESERVED</small><h2>Where it all began.</h2><p>The original Interactive Graphics student project by Weihao Wang, kept exactly as it was.</p><span>Play the original →</span></div></a><a class="edition new" href="remastered/"><img src="docs/remaster-preview.png" alt="The remastered adventure: a voxel maze floating in an atmospheric forest world"><div><small>THE REMASTER / A NEW JOURNEY</small><h2>A little cube. A grand adventure.</h2><p>Three worlds, fragments of light, and a way home. Reimagined with ChatGPT / OpenAI Codex.</p><span>Play the remaster →</span></div></a></div><footer>Original concept and project © Weihao Wang. Remastered in collaboration with ChatGPT / OpenAI Codex.<br>The original project’s educational declaration and asset credits are preserved. <a href="CREDITS.md">Credits and acknowledgements ↗</a></footer></main></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#3d6233">
+  <meta name="description" content="Cube Man Adventure by Weihao Wang. Play the preserved original student project or the remastered WebGL game.">
+  <title>Cube Man Adventure</title>
+  <link rel="icon" href="remastered/icon.svg"><link rel="stylesheet" href="remastered/pixel.css?v=2.1.0">
+  <style>
+    .gateway { max-width:1100px; padding:35px 25px; margin:auto; }
+    .gateway header { display:flex; justify-content:space-between; gap:20px; align-items:center; border-bottom:3px solid var(--border); padding-bottom:20px; }
+    .gateway .brand { color:var(--ink); font-size:11px; }
+    .gateway .brand img { width:34px; image-rendering:pixelated; }
+    .gateway h1 { font:25px/1.7 var(--pixel); margin:32px 0 14px; }
+    .gateway .intro { margin-bottom:27px; }
+    .editions { display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+    .edition { display:block; overflow:hidden; color:inherit; text-decoration:none; background:var(--paper); border:4px solid var(--border); box-shadow:6px 6px #567541; }
+    .edition:hover { border-color:#245f9b; box-shadow:6px 6px #245f9b; }
+    .edition img { width:100%; height:250px; object-fit:cover; display:block; image-rendering:pixelated; border-bottom:3px solid var(--border); }
+    .edition.new img { object-position:top; }
+    .edition>div { padding:24px; }
+    .edition small { font:9px/1.8 var(--pixel); color:#456b30; }
+    .edition h2 { font:15px/1.8 var(--pixel); margin:16px 0; }
+    .edition p { font-size:13px; min-height:42px; }
+    .edition .play-link { display:inline-block; padding:10px 14px; margin-top:12px; background:#4b7e36; color:#fff8de; border:2px solid #2b4b22; font:9px/1.6 var(--pixel); }
+    .gateway footer { padding:25px 0 0; display:block; border-top:3px solid var(--border); margin-top:35px; }
+    @media(max-width:700px) { .gateway{padding:25px 18px} .gateway header>a{font-size:10px} .gateway .brand{font-size:9px} .gateway h1{font-size:20px} .editions{grid-template-columns:1fr} .edition img{height:210px} }
+  </style>
+</head>
+<body><main class="gateway">
+  <header><div class="brand"><img src="remastered/icon.svg" alt="">CUBE MAN ADVENTURE</div><a href="https://github.com/Wealhour/An-interactive-browser-game-based-on-WebGL">GitHub</a></header>
+  <h1>Cube Man Adventure</h1>
+  <p class="intro">Select your game version. The original student project is kept unchanged.</p>
+  <div class="editions">
+    <a class="edition" href="original/"><img src="original/info.jpg" alt="Original Cube Man Adventure artwork and keyboard controls"><div><small>ORIGINAL GAME</small><h2>The student project</h2><p>My original WebGL game, just as it was.</p><span class="play-link">PLAY ORIGINAL ▶</span></div></a>
+    <a class="edition new" href="remastered/"><img src="docs/remaster-preview.png?v=2.1.0" alt="Remastered Cube Man Adventure with its pixel-style game menu"><div><small>REMASTERED GAME</small><h2>Three worlds to explore</h2><p>A new adventure with pixel menus, checkpoints, and three playable worlds.</p><span class="play-link">PLAY REMASTERED ▶</span></div></a>
+  </div>
+  <footer>Created by Weihao Wang · Remastered with ChatGPT / OpenAI Codex.<br><a href="CREDITS.md">Credits and licenses</a></footer>
+</main></body>
+</html>

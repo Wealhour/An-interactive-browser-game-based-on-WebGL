@@ -1,16 +1,16 @@
 import * as THREE from './vendor/three.module.js';
-import { random } from './core.js';
+import { random } from './core.js?v=2.1.0';
 
 export class AdventureScene {
   constructor(container) {
     this.container=container;
-    this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
+    this.renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'high-performance'});
+    this.renderer.setPixelRatio(1);
     this.renderer.outputEncoding=THREE.sRGBEncoding;
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure=1.05;
     this.renderer.shadowMap.enabled=true;
-    this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type=THREE.BasicShadowMap;
     container.appendChild(this.renderer.domElement);
     this.scene=new THREE.Scene();
     this.camera=new THREE.OrthographicCamera(-15,15,15,-15,.1,180);
@@ -26,7 +26,7 @@ export class AdventureScene {
     this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(container);
   }
   quality(value) {
-    this.renderer.setPixelRatio(value==='low'?1:Math.min(window.devicePixelRatio||1,1.6));
+    this.renderer.setPixelRatio(value==='low'?.75:1);
     this.renderer.shadowMap.enabled=value!=='low';
     this.worldGroup?.traverse(o=>{if(o.material)o.material.needsUpdate=true;});this.resize();
   }
@@ -82,7 +82,7 @@ export class AdventureScene {
         addBox(wx,h+.04,wz,.97,.13,.97,rng()>.4?world.config.ground:world.config.leaf);
         if(rng()>.48) {
           addBox(wx+(rng()-.5)*.5,h+.16,wz+(rng()-.5)*.5,.25,.21,.3,world.config.leaf);
-          if(rng()>.75)addBox(wx-.1,h+.3,wz,.11,.18,.11,world.config.accent,false);
+          if(rng()>.75)addBox(wx-.1,h+.3,wz,.11,.18,.11,world.config.leaf,false);
         }
         // Trees grow on walls, so decoration never secretly blocks a path.
         if((edge&&rng()>.68)||(!edge&&x%3===0&&z%3===0&&rng()>.55)) {
@@ -131,7 +131,17 @@ export class AdventureScene {
       const leg=new THREE.Group();leg.position.set(side*.105,.29,0);player.add(leg);cuboid(leg,0,-.11,0,.15,.25,.17,'#334d53');cuboid(leg,0,-.25,.035,.17,.08,.23,'#263b3c');this.limbs.push(leg);
     }
     player.position.set(world.start.x-c,.04,world.start.z-c);this.lastPlayer={...world.start};this.facing=Math.PI*.2;this.walk=0;
-    this.shardMeshes=world.shards.map(p=>{const group=new THREE.Group();group.position.set(p.x-c,.8,p.z-c);this.dynamic.add(group);const shard=meshAt(new THREE.OctahedronBufferGeometry(.26),material(world.config.accent,true),0,0,0,group);const ring=meshAt(new THREE.TorusBufferGeometry(.34,.025,4,24),material(world.config.accent,true),0,-.32,0,group);ring.rotation.x=Math.PI/2;return {group,shard,ring};});
+    this.shardMeshes=world.shards.map(p=>{
+      const group=new THREE.Group();group.position.set(p.x-c,0,p.z-c);this.dynamic.add(group);
+      const shard=meshAt(new THREE.OctahedronBufferGeometry(.28),material('#36dfff',true),0,.52,0,group);
+      // A fixed floor marker makes the exact pickup tile visible from any camera.
+      const ring=new THREE.Group();group.add(ring);
+      for(const [x,z,w,d] of [[0,-.41,.88,.06],[0,.41,.88,.06],[-.41,0,.06,.76],[.41,0,.06,.76]]){
+        const edge=meshAt(box,material('#36dfff',true),x,.04,z,ring);edge.scale.set(w,.035,d);
+      }
+      const outline=new THREE.LineSegments(new THREE.EdgesGeometry(shard.geometry),new THREE.LineBasicMaterial({color:'#123c75'}));shard.add(outline);
+      return {group,shard,ring};
+    });
     this.moteMeshes=world.motes.map(p=>meshAt(new THREE.OctahedronBufferGeometry(.105),material('#ffe09b',true),p.x-c,.43,p.z-c));
     this.ghostMeshes=world.ghosts.map(p=>{
       const group=new THREE.Group();group.position.set(p.x-c,.5,p.z-c);this.dynamic.add(group);
@@ -139,7 +149,7 @@ export class AdventureScene {
       meshAt(new THREE.IcosahedronBufferGeometry(.30,1),mat,0,0,0,group);
       cuboid(group,-.10,.03,.25,.06,.08,.04,'#3b3154');cuboid(group,.10,.03,.25,.06,.08,.04,'#3b3154');
       const skirt=meshAt(new THREE.ConeBufferGeometry(.29,.27,5),mat,0,-.21,0,group);skirt.rotation.z=Math.PI;
-      return group;
+      group.rotation.y=p.heading;return group;
     });
     world.hazards.slice(0,rules.hazardCount).forEach(p=>{
       const group=new THREE.Group();group.position.set(p.x-c,0,p.z-c);this.dynamic.add(group);
@@ -175,9 +185,9 @@ export class AdventureScene {
     this.limbs.forEach((l,i)=>l.rotation.x=moving&&!this.reduced?Math.sin(this.walk+(i%2?0:Math.PI))*.5:0);
     this.player.visible=!(run?.hits>0&&run.invulnerable>0&&Math.floor(time*12)%2===0&&this.playing);
     this.lastPlayer={...p};
-    this.shardMeshes.forEach((m,i)=>{m.group.visible=!world.shards[i].collected;m.group.position.y=.8+Math.sin(animated*2+i)*.1;m.shard.rotation.y=animated*.9+i;m.ring.rotation.z=animated*.3;});
+    this.shardMeshes.forEach((m,i)=>{m.group.visible=!world.shards[i].collected;m.shard.position.y=.52+Math.sin(animated*2+i)*.06;m.shard.rotation.y=animated*.9+i;});
     this.moteMeshes.forEach((m,i)=>{m.visible=!world.motes[i].collected;m.position.y=.43+Math.sin(animated*3+i)*.07;m.rotation.y=animated;});
-    this.ghostMeshes.forEach((m,i)=>{const g=world.ghosts[i];m.position.set(g.x-c,.55+Math.sin(animated*2+i)*.12,g.z-c);});
+    this.ghostMeshes.forEach((m,i)=>{const g=world.ghosts[i];m.position.set(g.x-c,.55+Math.sin(animated*2+i)*.12,g.z-c);m.rotation.y=g.heading;});
     const open=run?.shards===3;this.gateMat.opacity=open?1:.25;this.gateCore.material.opacity=open?.46:.10;
     this.gateRing.rotation.z=animated*(open?.5:.15);this.gateCore.scale.x=1+Math.sin(animated*2)*.06;
     if(run?.checkpoint)this.checkpointRing.material.color.set(world.config.accent);

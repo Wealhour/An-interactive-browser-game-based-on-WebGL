@@ -12,7 +12,7 @@
 
 The remaster bundles **Three.js r118**, copied from the original project’s `js/libs/three.module.js`. Three.js is distributed under the MIT license; see [`remastered/vendor/LICENSE-Threejs.txt`](remastered/vendor/LICENSE-Threejs.txt).
 
-No new externally downloaded artwork, character models, fonts, or audio are used by the remaster. Its character, trees, terrain, props, effects, and sounds are generated in code. System fonts provide the interface typography.
+The character, trees, terrain, props, effects, and sounds are generated in code. The pixel interface uses **Press Start 2P** by **CodeMan38**, bundled from the [Google Fonts source repository](https://github.com/google/fonts/tree/main/ofl/pressstart2p) under the SIL Open Font License 1.1. Its license is preserved in [`remastered/fonts/OFL.txt`](remastered/fonts/OFL.txt). Body text uses system monospace fonts. Fonts are served locally with the game.
 
 ## Original project assets
 

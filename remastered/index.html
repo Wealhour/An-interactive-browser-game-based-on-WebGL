@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#101e20">
+  <meta name="theme-color" content="#395b2c">
   <meta name="description" content="A little cube. Three impossible worlds. A new WebGL adventure by Weihao Wang, remastered with ChatGPT.">
   <title>Cube Man Adventure — Remastered</title>
-  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="pixel.css?v=2.1.0">
 </head>
 <body>
   <header class="header">
-    <a class="brand" href="../" aria-label="Cube Man Adventure editions"><svg width="32" height="36" viewBox="0 0 32 36" aria-hidden="true"><path d="M16 2 30 10v16l-14 8L2 26V10Z M2 10l14 8 14-8 M16 18v16" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>CUBE MAN<span class="brand-sub">ADVENTURE / REMASTERED</span></span></a>
-    <nav aria-label="Main navigation"><button id="guide-button" class="text-button">Field guide <span>↗</span></button><button id="credits-button" class="text-button">Credits</button><a class="text-button original-link" href="../original/">Original edition ↗</a></nav>
+    <a class="brand" href="../" aria-label="Cube Man Adventure editions"><svg width="32" height="36" viewBox="0 0 32 36" aria-hidden="true"><path d="M3 3h26v26H3z" fill="#5b4834"/><path d="M6 12h20v14H6z" fill="#e4b27e"/><path d="M9 15h4v4H9zm10 0h4v4h-4z" fill="#24324c"/><path d="M5 29h22v6H5z" fill="#58aab6"/></svg><span>CUBE MAN<span class="brand-sub">ADVENTURE / REMASTERED</span></span></a>
+    <nav aria-label="Main navigation"><button id="guide-button" class="text-button">How to play</button><button id="credits-button" class="text-button">Credits</button><a class="text-button original-link" href="../original/">Original game</a></nav>
     <div class="header-actions"><button id="sound-button" class="icon-button" aria-label="Enable sound" aria-pressed="false" title="Toggle sound">♫<span class="sound-slash">/</span></button><button id="fullscreen-button" class="icon-button" aria-label="Enter fullscreen" title="Fullscreen">⛶</button></div>
   </header>
   <main>
@@ -19,32 +19,32 @@
       <div class="scene-vignette" aria-hidden="true"></div>
       <div class="lobby" id="lobby">
         <div class="hero">
-          <p class="eyebrow"><span class="live-dot"></span> A FAMILIAR ADVENTURE. A NEW WORLD.</p>
-          <h1>A little cube.<br>A <em>grand</em><br>adventure.</h1>
-          <p class="hero-copy">Lost between worlds. Guided by light.<br> Find the fragments. Brave the unknown.<br> Bring our little wanderer home.</p>
-          <div class="play-group"><button id="play-button" class="primary-button">Begin adventure <span>→</span></button><span class="play-note">No download. Just a little curiosity.</span></div>
-          <div class="difficulty-control"><label for="difficulty">YOUR KIND OF ADVENTURE</label><select id="difficulty"><option value="explorer">Explorer · 5 hearts</option><option value="adventure" selected>Adventurer · 3 hearts</option><option value="expert">Wayfinder · 2 hearts</option></select><p id="difficulty-description">Three hearts. A little more mystery.</p></div>
+          <p class="eyebrow">THE MULTIVERSE NEEDS A CUBE MAN!</p>
+          <h1>Cube Man<br><em>Adventure</em></h1>
+          <p class="hero-copy">Cube Man is lost in the multiverse!<br> Collect 3 blue light fragments,<br> avoid the ghosts, and find the exit.</p>
+          <div class="difficulty-control"><label for="difficulty">SELECT DIFFICULTY</label><select id="difficulty"><option value="explorer">EASY · 5 hearts</option><option value="adventure" selected>NORMAL · 3 hearts</option><option value="expert">HARD · 2 hearts</option></select><p id="difficulty-description">3 hearts · normal ghosts</p></div>
+          <div class="play-group"><button id="play-button" class="primary-button">PLAY WORLD 1 <span>▶</span></button><span class="play-note">WASD / arrows: move · SPACE: dash</span></div>
         </div>
-        <div class="world-caption"><span class="world-orbit">✧</span><div><span id="preview-tag">01 / THE AWAKENING</span><h2 id="preview-name">The Verdant Veil</h2><p id="preview-subtitle">Where the forest remembers.</p></div></div>
-        <div class="scene-note"><span>✦</span> THREE WORLDS TO FIND YOUR WAY HOME</div>
+        <div class="world-caption"><div><span id="preview-tag">WORLD 1</span><h2 id="preview-name">The Verdant Veil</h2><p id="preview-subtitle">Where the forest remembers.</p></div></div>
+        <div class="scene-note">THREE WORLDS. PLAY IN ANY ORDER.</div>
       </div>
       <div class="hud" id="hud" hidden>
         <div class="hud-top"><div class="world-info"><span id="world-number" class="eyebrow">WORLD 01</span><h2 id="world-name">The Verdant Veil</h2><span id="hearts" aria-label="3 hearts">♥ ♥ ♥</span></div><div class="hud-controls"><button id="camera-button" class="glass-button" aria-label="Switch camera view">⌖ <span>Follow</span></button> <button id="pause-button" class="glass-button" aria-label="Pause game">Ⅱ <span>Pause</span></button></div></div>
-        <div class="objective"><span class="objective-symbol">◇</span><div><p id="objective-label">Restore the gate</p><span id="objective-description">Find the three light fragments</span></div><strong id="shard-count">0 <span>/ 3</span></strong></div>
+        <div class="objective"><span class="objective-symbol">◆</span><div><p id="objective-label">Collect 3 fragments</p><span id="objective-description">Walk onto the blue marked tiles</span></div><strong id="shard-count">0 <span>/ 3</span></strong></div>
         <div class="hud-bottom"><div class="run-info"><span id="timer">00:00</span><span class="info-divider"></span><span id="mote-count">✦ 0 / 7</span><span class="boost-indicator" id="boost" hidden>SWIFT LIGHT</span></div><div class="dash-info"><span>SPACE / DASH</span><div><i id="dash-meter"></i></div></div></div>
-        <div class="map-wrap"><canvas id="minimap" width="190" height="190" aria-label="Maze map: you are white, fragments are mint, the gate is a ring"></canvas><span>YOUR WAY THROUGH</span></div>
+        <div class="map-wrap"><canvas id="minimap" width="190" height="190" aria-label="Maze map: you are white, fragments are blue diamonds, and the exit is a green square"></canvas><span>MAP</span></div>
         <div class="desktop-controls"><kbd>W A S D</kbd> or <kbd>↑ ← ↓ →</kbd> move <span>·</span> <kbd>Space</kbd> dash <span>·</span> <kbd>C</kbd> camera <span>·</span> <kbd>Esc</kbd> pause</div>
         <div class="touch-controls" id="touch-controls"><div id="joystick" aria-label="Drag to move" role="group"><div id="joystick-knob"></div></div><button id="dash-touch" aria-label="Dash">↗<span>DASH</span></button></div>
       </div>
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
-      <div id="loading" class="loading"><span class="loading-cube">◇</span><span>Finding a little wonder…</span></div>
+      <div id="loading" class="loading"><span class="loading-cube">■</span><span>Loading game...</span></div>
       <div id="error" class="error-panel" hidden><span class="eyebrow">THE WORLD NEEDS A MOMENT</span><h2>We couldn’t open the portal.</h2><p id="error-message">This adventure needs a browser with WebGL enabled.</p><button class="primary-button" onclick="location.reload()">Try again →</button><a href="../original/">Visit the original edition ↗</a></div>
     </section>
-    <section class="journey" id="journey" aria-label="Choose your world"><div class="journey-label"><span class="eyebrow">THE JOURNEY</span><p>Small steps.<br> Wonderful places.</p></div><div class="worlds" id="worlds"></div><div class="journey-aside"><span>BUILT WITH CURIOSITY</span><p>A student project,<br>reimagined.</p><a href="../original/">Meet the original ↗</a></div></section>
+    <section class="journey" id="journey" aria-label="Choose your world"><div class="journey-label"><span class="eyebrow">WORLD SELECT</span><p>All worlds open!</p></div><div class="worlds" id="worlds"></div></section>
   </main>
-  <footer><span>Created by <strong>Weihao Wang</strong><span class="footer-dot"> · </span>Remastered with <strong>ChatGPT / OpenAI Codex</strong></span><span>GET LOST. FIND WONDER.</span></footer>
+  <footer><span>Created by <strong>Weihao Wang</strong><span class="footer-dot"> · </span>Remastered with <strong>ChatGPT / OpenAI Codex</strong></span><a href="../original/">Play the original</a></footer>
   <dialog id="dialog" aria-labelledby="dialog-title"><div class="dialog-inner"><button id="dialog-close" class="dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
   <noscript><div class="noscript">Enable JavaScript to play Cube Man Adventure. <a href="../original/README.md">Read about the original project</a>.</div></noscript>
-  <script type="module" src="app.js"></script>
+  <script type="module" src="app.js?v=2.1.0"></script>
 </body>
 </html>

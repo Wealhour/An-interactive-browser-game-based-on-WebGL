@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { WORLDS, DIFFICULTIES, createWorld, createRun, tick, move, canStand, distances, findPath, rating } from '../remastered/core.js';
+import { WORLDS, DIFFICULTIES, createWorld, createRun, tick, move, canStand, distances, findPath, rating, touchesPickup } from '../remastered/core.js';
 
 test('all three worlds are deterministic, connected, and have reachable objectives',()=>{
   for(let i=0;i<WORLDS.length;i++){
@@ -64,4 +64,52 @@ test('each world can be completed using real movement in every difficulty',()=>{
 });
 test('star rating rewards speed and clean play without imposing a time limit',()=>{
   const r=createRun(0);assert.equal(rating(r),3);r.hits=1;assert.equal(rating(r),2);r.time=WORLDS[0].par+1;assert.equal(rating(r),1);
+});
+
+test('every legal fragment tile edge and corner collects in all three real worlds',()=>{
+  let previouslyMissed=0;
+  for(let world=0;world<3;world++)for(let index=0;index<3;index++){
+    const r=createRun(world),fragment=r.world.shards[index];
+    r.world.shards=[fragment];r.world.ghosts=[];r.world.hazards=[];
+    for(let dx=-.48;dx<.5;dx+=.08)for(let dz=-.48;dz<.5;dz+=.08){
+      const player={x:fragment.x+dx,z:fragment.z+dz};
+      if(!canStand(r.world.grid,player.x,player.z))continue;
+      if(Math.hypot(dx,dz)>.52)previouslyMissed++;
+      fragment.collected=false;r.shards=0;r.player=player;r.events=[];
+      tick(r,{},0);
+      assert.equal(r.shards,1,`Missed fragment ${index+1} in world ${world+1} at ${dx},${dz}`);
+      assert.equal(r.events.filter(e=>e.type==='shard').length,1);
+      tick(r,{},0);assert.equal(r.shards,1,'A fragment cannot be collected twice');
+    }
+  }
+  assert.ok(previouslyMissed>=9,'Regression must exercise positions the old circular pickup missed');
+});
+test('walking past the corner of the third forest fragment picks it up',()=>{
+  const r=createRun(0);r.world.ghosts=[];r.world.hazards=[];
+  r.player={x:7.48,z:8.48};
+  assert.ok(canStand(r.world.grid,r.player.x,r.player.z));
+  assert.ok(Math.hypot(r.player.x-7,r.player.z-8)>.52);
+  tick(r,{x:1,z:-1},1/60);
+  assert.ok(r.world.shards[2].collected);assert.equal(r.shards,1);
+});
+test('pickup traversal cannot collect through a separating wall',()=>{
+  const r=openRun();r.world.grid[3][4]=1;r.world.grid[2][4]=1;r.world.grid[4][4]=1;
+  r.world.shards=[{x:5,z:3,collected:false}];
+  for(let i=0;i<120;i++)tick(r,{x:1,z:0,dash:i===0},1/60);
+  assert.equal(r.shards,0);assert.ok(r.player.x<3.3);
+  assert.equal(touchesPickup(r.player,r.world.shards[0]),false);
+});
+test('ghost facing follows its actual travel through right, down, up, and left turns',()=>{
+  const r=openRun();r.player={x:1,z:1};r.rules={...r.rules,ghostSpeed:4};
+  const ghost={x:3,z:3,route:[{x:3,z:3},{x:4,z:3},{x:4,z:4}],target:1,direction:1,heading:0};r.world.ghosts=[ghost];
+  const directions=new Set();
+  for(let i=0;i<30;i++){
+    const before={x:ghost.x,z:ghost.z};tick(r,{},.05);
+    const dx=ghost.x-before.x,dz=ghost.z-before.z;
+    if(Math.hypot(dx,dz)===0)continue;
+    const expected=Math.atan2(dx,dz),error=Math.atan2(Math.sin(ghost.heading-expected),Math.cos(ghost.heading-expected));
+    assert.ok(Math.abs(error)<1e-8,'Ghost must face the direction it is moving');
+    directions.add(Math.round(expected/(Math.PI/2)));
+  }
+  assert.equal(directions.size,4,'Patrol must exercise every cardinal direction');
 });

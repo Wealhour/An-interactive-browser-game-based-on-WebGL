@@ -1,6 +1,6 @@
 {
   "name": "cube-man-adventure-remastered",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
   "description": "A preserved student project and a new WebGL adventure by Weihao Wang, remastered with ChatGPT / OpenAI Codex.",
@@ -8,6 +8,7 @@
     "start": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "node scripts/browser-integration.mjs",
+    "test:keyboard": "node scripts/keyboard-playthrough.mjs",
     "build": "node scripts/build-site.mjs",
     "verify:archive": "node scripts/verify-archive.mjs"
   },

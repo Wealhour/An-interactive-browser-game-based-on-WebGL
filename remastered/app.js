@@ -1,4 +1,4 @@
-import { WORLDS, DIFFICULTIES, createWorld, createRun, tick, rating } from './core.js';
+import { WORLDS, DIFFICULTIES, createWorld, createRun, tick, rating } from './core.js?v=2.1.0';
 
 const $=id=>document.getElementById(id);
 const STORAGE='cube-man-remastered-v2';
@@ -9,7 +9,7 @@ function loadSave() {
     return {...defaults,unlocked:Number.isInteger(saved.unlocked)?Math.max(0,Math.min(2,saved.unlocked)):0,selected:Number.isInteger(saved.selected)?Math.max(0,Math.min(2,saved.selected)):0,difficulty:DIFFICULTIES[saved.difficulty]?saved.difficulty:defaults.difficulty,sound:saved.sound===true,quality:saved.quality==='low'?'low':'high',reduced:typeof saved.reduced==='boolean'?saved.reduced:defaults.reduced,best:saved.best&&typeof saved.best==='object'&&!Array.isArray(saved.best)?saved.best:{}};
   } catch {return {...defaults,best:{}};}
 }
-const save=loadSave();save.selected=Math.min(save.selected,save.unlocked);
+const save=loadSave();
 let selected=save.selected,run=null,scene=null,paused=false,started=false,lastFrame=0,toastUntil=0,modalClosable=true,resumeOnClose=false,storageWarning=false;
 let stick={x:0,z:0},dashQueued=false,gamepadDash=false,gamepadPause=false;
 const keys=new Set();
@@ -33,18 +33,18 @@ function toast(message,seconds=3.2){$('toast').textContent=message;$('toast').cl
 function worldCards(){
   $('worlds').replaceChildren();
   WORLDS.forEach((world,i)=>{
-    const button=document.createElement('button');button.className=`world-card${selected===i?' selected':''}`;button.style.setProperty('--card-color',world.accent);button.disabled=i>save.unlocked;
-    button.setAttribute('aria-pressed',String(selected===i));button.setAttribute('aria-label',`${world.name}${i>save.unlocked?'. Complete the previous world to unlock.':''}`);
+    const button=document.createElement('button');button.className=`world-card${selected===i?' selected':''}`;button.style.setProperty('--card-color',world.accent);
+    button.setAttribute('aria-pressed',String(selected===i));button.setAttribute('aria-label',`Select world ${i+1}: ${world.name}`);
     const best=bestFor(i);
-    button.innerHTML=`<span class="world-icon" aria-hidden="true">${['♧','♜','✧'][i]}</span><span><small>WORLD 0${i+1}</small><strong>${world.short}</strong><span class="world-status">${i>save.unlocked?'◇ Complete world 0'+i:best?'★'.repeat(best.stars)+' · '+formatTime(best.time):i===0?'Your journey starts here':'Ready to explore'}</span></span>`;
+    button.innerHTML=`<span class="world-icon" aria-hidden="true">${i+1}</span><span><small>WORLD ${i+1}</small><strong>${world.short}</strong><span class="world-status">${best?'★'.repeat(best.stars)+' · '+formatTime(best.time):'Click to select'}</span></span>`;
     button.onclick=()=>preview(i);$('worlds').appendChild(button);
   });
 }
 function preview(index){selected=index;save.selected=index;persist();const world=WORLDS[index];
-  $('preview-tag').textContent=world.tag;$('preview-name').textContent=world.name;$('preview-subtitle').textContent=world.subtitle;
+  $('preview-tag').textContent=`WORLD ${index+1}`;$('preview-name').textContent=world.name;$('preview-subtitle').textContent=world.subtitle;
   document.documentElement.style.setProperty('--lime',world.accent);
   if(scene){scene.playing=false;scene.build(createWorld(index),DIFFICULTIES[save.difficulty]);}
-  $('play-button').innerHTML=`${bestFor(index)?'Return to this world':'Begin adventure'} <span>→</span>`;worldCards();
+  $('play-button').innerHTML=`PLAY WORLD ${index+1} <span>▶</span>`;worldCards();
 }
 $('difficulty').value=save.difficulty;
 function difficultyChanged(){save.difficulty=$('difficulty').value;$('difficulty-description').textContent=DIFFICULTIES[save.difficulty].description;persist();worldCards();if(scene&&!started)scene.build(createWorld(selected),DIFFICULTIES[save.difficulty]);}
@@ -61,22 +61,22 @@ function modal(content,{closable=true,resume=false}={}){
   if(!dialog.open)dialog.showModal();
 }
 function leaveModal(){resumeOnClose=false;dialog.close();}
-function settingsMarkup(){return `<div class="setting-row"><label for="quality">Graphics</label><select id="quality"><option value="high" ${save.quality==='high'?'selected':''}>Detailed · soft shadows</option><option value="low" ${save.quality==='low'?'selected':''}>Light · better performance</option></select></div><div class="setting-row"><label for="reduced">Reduce ambient motion</label><input id="reduced" type="checkbox" ${save.reduced?'checked':''}></div>`;}
+function settingsMarkup(){return `<div class="setting-row"><label for="quality">Graphics</label><select id="quality"><option value="high" ${save.quality==='high'?'selected':''}>HIGH / pixel shadows</option><option value="low" ${save.quality==='low'?'selected':''}>LOW / faster</option></select></div><div class="setting-row"><label for="reduced">Reduce ambient motion</label><input id="reduced" type="checkbox" ${save.reduced?'checked':''}></div>`;}
 function bindSettings(){const q=$('quality');if(q)q.onchange=()=>{save.quality=q.value;scene.quality(q.value);persist();};const r=$('reduced');if(r)r.onchange=()=>{save.reduced=r.checked;scene.reduced=r.checked;persist();};}
-function guide(){modal(`<span class="eyebrow">A WANDERER’S FIELD GUIDE</span><h2 id="dialog-title">A little light goes<br>a long way.</h2><div class="guide-grid"><span>◇</span><p><strong>Gather three light fragments</strong>Find the glowing diamonds to restore the gate. Then step into the gate to travel onward.</p><span>✦</span><p><strong>Catch a little starlight</strong>Golden sparks grant a three-second speed boost. They’re optional, but lovely to find.</p><span>◎</span><p><strong>Rest at the waystone</strong>The pale blue ring restores hearts and marks a checkpoint. Your fragments survive a hit.</p><span>☁</span><p><strong>Give the locals some space</strong>Lavender wisps patrol the paths; red mushrooms sting. Dash through danger or take another route.</p></div><div class="guide-controls"><b>Keyboard:</b> WASD / arrows to move · Space to dash<br>C to switch camera · Esc / P to pause<br><b>Touch:</b> drag the thumbstick · tap dash<br><b>Gamepad:</b> left stick / D-pad · A to dash · Start to pause</div><p>Earn three stars by finishing without a hit and beating the world’s target time. There is no time limit.</p>${settingsMarkup()}<div class="dialog-actions"><button id="guide-done" class="primary-button">Let’s wander <span>→</span></button></div>`,{resume:started&&run?.status==='playing'});$('guide-done').onclick=closeModal;bindSettings();}
+function guide(){modal(`<span class="eyebrow">CUBE MAN ADVENTURE</span><h2 id="dialog-title">How to play</h2><div class="guide-grid"><span>◆</span><p><strong>Collect 3 BLUE fragments</strong>Walk onto their blue square floor markers. They are picked up automatically, including at tile edges. No extra key needed.</p><span>✦</span><p><strong>Golden lights = speed boost</strong>These optional pickups make you faster for 3 seconds.</p><span>◎</span><p><strong>Blue waystone = checkpoint</strong>Its pale ring restores your hearts. After a hit you return here and keep your fragments.</p><span>☁</span><p><strong>Avoid ghosts and red mushrooms</strong>They take a heart. Dash to pass through danger safely.</p></div><div class="guide-controls"><b>Keyboard:</b> WASD / arrows: move · Space: dash<br>C: camera · Esc / P: pause<br><b>Touch:</b> thumbstick: move · DASH: dash<br><b>Gamepad:</b> left stick / D-pad: move · A: dash · Start: pause</div><p>All 3 worlds can be selected from the menu. Collect the fragments and enter the exit to finish. There is no time limit.</p>${settingsMarkup()}<div class="dialog-actions"><button id="guide-done" class="primary-button">GOT IT <span>▶</span></button></div>`,{resume:started&&run?.status==='playing'});$('guide-done').onclick=closeModal;bindSettings();}
 $('guide-button').onclick=guide;
-$('credits-button').onclick=()=>modal(`<span class="eyebrow">FROM A SMALL BEGINNING</span><h2 id="dialog-title">Made with curiosity.</h2><p><span class="credit-name">Weihao Wang</span><br>Original creator, game concept, and student project for the Interactive Graphics course at Sapienza.</p><p><span class="credit-name">ChatGPT / OpenAI Codex</span><br>Remaster collaborator: game design, original procedural artwork, programming, interface, accessibility improvements, and testing.</p><p>Built on the Three.js engine included in the original project. The remaster’s worlds, character, and sounds are generated in code.</p><p>The original project is preserved as a playable archive, including its original asset attributions.</p><div class="dialog-actions"><a class="secondary-button" href="../original/">Play the original ↗</a><a class="secondary-button" href="https://github.com/Wealhour/An-interactive-browser-game-based-on-WebGL" target="_blank" rel="noopener">View the source ↗</a></div>`,{resume:started&&run?.status==='playing'});
+$('credits-button').onclick=()=>modal(`<span class="eyebrow">CUBE MAN ADVENTURE</span><h2 id="dialog-title">Credits</h2><p><span class="credit-name">Weihao Wang</span><br>Original creator, game concept, and student project for the Interactive Graphics course at Sapienza.</p><p><span class="credit-name">ChatGPT / OpenAI Codex</span><br>Remaster collaborator: game design, original procedural artwork, programming, interface, accessibility improvements, and testing.</p><p>Built on the Three.js engine included in the original project. The remaster’s worlds, character, and sounds are generated in code.</p><p>The original project is preserved as a playable archive, including its original asset attributions.</p><div class="dialog-actions"><a class="secondary-button" href="../original/">Play the original ↗</a><a class="secondary-button" href="https://github.com/Wealhour/An-interactive-browser-game-based-on-WebGL" target="_blank" rel="noopener">View the source ↗</a></div>`,{resume:started&&run?.status==='playing'});
 
 function start(index=selected){if(!scene)return;leaveModal();selected=index;save.selected=index;persist();run=createRun(index,save.difficulty);paused=false;started=true;clearInput();
   scene.playing=true;scene.follow=window.innerWidth<761;scene.build(run.world,run.rules);
   $('lobby').hidden=true;$('hud').hidden=false;document.body.classList.add('playing');scene.resize();
   $('world-number').textContent=`WORLD 0${index+1} / ${run.rules.name.toUpperCase()}`;$('world-name').textContent=run.world.config.name;document.documentElement.style.setProperty('--lime',run.world.config.accent);
-  cameraLabel();updateHud();sound.play('start');toast(index===0?'Find three light fragments. Follow your curiosity.':run.world.config.story,5);
+  cameraLabel();updateHud();sound.play('start');toast(`WORLD ${index+1}: collect 3 BLUE fragments, then find the exit.`,5);
   $('pause-button').focus({preventScroll:true});
 }
 $('play-button').onclick=()=>{sound.wake();start();};
 function home(){leaveModal();started=false;paused=false;run=null;toastUntil=0;$('toast').classList.remove('visible');document.body.classList.remove('playing');$('hud').hidden=true;$('lobby').hidden=false;clearInput();preview(selected);scene.resize();$('play-button').focus({preventScroll:true});}
-function pause(){if(!started||run.status!=='playing'||dialog.open)return;modal(`<span class="eyebrow">TAKE A BREATH</span><h2 id="dialog-title">The world can wait.</h2><p>Your journey is paused. ${run.shards} of 3 light fragments found.</p>${settingsMarkup()}<div class="dialog-actions"><button id="resume" class="primary-button">Keep wandering <span>→</span></button><button id="restart" class="secondary-button">Restart world</button><button id="home" class="secondary-button">Title screen</button></div>`,{resume:true});$('resume').onclick=closeModal;$('restart').onclick=()=>start(selected);$('home').onclick=home;bindSettings();}
+function pause(){if(!started||run.status!=='playing'||dialog.open)return;modal(`<span class="eyebrow">GAME PAUSED</span><h2 id="dialog-title">Paused</h2><p>Your journey is paused. ${run.shards} of 3 light fragments found.</p>${settingsMarkup()}<div class="dialog-actions"><button id="resume" class="primary-button">RESUME <span>→</span></button><button id="restart" class="secondary-button">Restart world</button><button id="home" class="secondary-button">MENU</button></div>`,{resume:true});$('resume').onclick=closeModal;$('restart').onclick=()=>start(selected);$('home').onclick=home;bindSettings();}
 $('pause-button').onclick=pause;
 function cameraLabel(){$('camera-button').innerHTML=`⌖ <span>${scene.follow?'Overview':'Follow'}</span>`;$('camera-button').setAttribute('aria-label',`Switch to ${scene.follow?'overview':'follow'} camera`);}
 function toggleCamera(){if(!scene)return;scene.follow=!scene.follow;cameraLabel();}
@@ -85,15 +85,15 @@ $('camera-button').onclick=toggleCamera;
 function finish(won){
   if(won){const stars=rating(run),key=`${selected}-${run.difficulty}`,old=bestFor(selected);save.unlocked=Math.min(2,Math.max(save.unlocked,selected+1));
     save.best[key]={time:old?Math.min(old.time,run.time):run.time,stars:old?Math.max(old.stars,stars):stars};persist();worldCards();
-    modal(`<span class="eyebrow">${selected===2?'A LITTLE CUBE. A LONG WAY HOME.':'WORLD 0'+(selected+1)+' / COMPLETE'}</span><h2 id="dialog-title">${selected===2?'Every path led home.':'A world of wonder,<br>behind you.'}</h2><p>${selected===2?'Through forest, fire, and starlight, our little wanderer found the way. Thank you for taking this journey.':WORLDS[selected+1].name+' is waiting on the other side.'}</p><div class="result-stars" aria-label="${stars} of 3 stars">${'★'.repeat(stars)}<span style="opacity:.2">${'★'.repeat(3-stars)}</span></div><div class="result-stats"><div><strong>${formatTime(run.time)}</strong><span>YOUR TIME</span></div><div><strong>${run.motes} / 7</strong><span>STARLIGHT</span></div><div><strong>${run.hits}</strong><span>HITS TAKEN</span></div></div><p>${stars===3?'A perfect crossing. Beautifully done.':`Three stars: finish without a hit and under ${formatTime(run.world.config.par)}. Your best time and star rating are saved separately for this difficulty.`}</p><div class="dialog-actions">${selected<2?'<button id="next-world" class="primary-button">Into the next world <span>→</span></button>':'<button id="return-home" class="primary-button">Back to the beginning <span>→</span></button>'}<button id="try-again" class="secondary-button">Explore again</button><button id="result-home" class="secondary-button">Title screen</button></div>`,{closable:false});
+    modal(`<span class="eyebrow">${selected===2?'ALL WORLDS COMPLETE!':'WORLD 0'+(selected+1)+' / COMPLETE'}</span><h2 id="dialog-title">${selected===2?'YOU WIN!':'WORLD COMPLETE!'}</h2><p>${selected===2?'Through forest, fire, and starlight, our little wanderer found the way. Thank you for taking this journey.':WORLDS[selected+1].name+' is waiting on the other side.'}</p><div class="result-stars" aria-label="${stars} of 3 stars">${'★'.repeat(stars)}<span style="opacity:.2">${'★'.repeat(3-stars)}</span></div><div class="result-stats"><div><strong>${formatTime(run.time)}</strong><span>YOUR TIME</span></div><div><strong>${run.motes} / 7</strong><span>STARLIGHT</span></div><div><strong>${run.hits}</strong><span>HITS TAKEN</span></div></div><p>${stars===3?'A perfect crossing. Beautifully done.':`Three stars: finish without a hit and under ${formatTime(run.world.config.par)}. Your best time and star rating are saved separately for this difficulty.`}</p><div class="dialog-actions">${selected<2?'<button id="next-world" class="primary-button">NEXT WORLD <span>→</span></button>':'<button id="return-home" class="primary-button">WORLD SELECT <span>→</span></button>'}<button id="try-again" class="secondary-button">PLAY AGAIN</button><button id="result-home" class="secondary-button">MENU</button></div>`,{closable:false});
     if($('next-world'))$('next-world').onclick=()=>start(selected+1);if($('return-home'))$('return-home').onclick=()=>{selected=0;home();};$('try-again').onclick=()=>start(selected);$('result-home').onclick=home;
   }else{
-    modal(`<span class="eyebrow">EVERY WANDERER TAKES A WRONG TURN</span><h2 id="dialog-title">A pause in the path.</h2><p>The wisps got a little too close. This world is still yours to discover.</p><div class="result-stats"><div><strong>${formatTime(run.time)}</strong><span>TIME EXPLORING</span></div><div><strong>${run.shards} / 3</strong><span>FRAGMENTS</span></div></div><p>Try a dash through danger, or choose Explorer for five hearts and slower wisps.</p><div class="dialog-actions"><button id="retry" class="primary-button">Try this world again <span>→</span></button><button id="easier" class="secondary-button">Try as Explorer</button><button id="result-home" class="secondary-button">Title screen</button></div>`,{closable:false});
+    modal(`<span class="eyebrow">CUBE MAN ADVENTURE</span><h2 id="dialog-title">GAME OVER</h2><p>You ran out of hearts. Try again or choose another world from the menu.</p><div class="result-stats"><div><strong>${formatTime(run.time)}</strong><span>TIME EXPLORING</span></div><div><strong>${run.shards} / 3</strong><span>FRAGMENTS</span></div></div><p>Use Space to dash through danger, or try EASY mode for 5 hearts and slower ghosts.</p><div class="dialog-actions"><button id="retry" class="primary-button">RETRY <span>→</span></button><button id="easier" class="secondary-button">TRY EASY MODE</button><button id="result-home" class="secondary-button">MENU</button></div>`,{closable:false});
     $('retry').onclick=()=>start(selected);$('easier').onclick=()=>{save.difficulty='explorer';$('difficulty').value='explorer';$('difficulty-description').textContent=DIFFICULTIES.explorer.description;start(selected);};$('result-home').onclick=home;
   }
 }
 function handleEvents(){for(const event of run.events){sound.play(event.type);switch(event.type){
-  case 'shard':toast(event.count===3?'The gate is awake. Follow the ring on your map.':`Light fragment found. ${event.count} of 3.`);break;
+  case 'shard':toast(event.count===3?'3 / 3 FRAGMENTS! Exit open: find the green square on the map.':`FRAGMENT COLLECTED: ${event.count} / 3`);break;
   case 'mote':toast('A little starlight. A little more speed.',1.8);break;
   case 'checkpoint':toast('Waystone lit. Hearts restored. A safe place to return.');break;
   case 'hit':if(run.health>0)toast('Back to safety. Your fragments are still with you.');break;
@@ -101,16 +101,20 @@ function handleEvents(){for(const event of run.events){sound.play(event.type);sw
   case 'lost':finish(false);break;
   }}run.events.length=0;}
 function updateHud(){if(!run)return;$('timer').textContent=formatTime(run.time);$('hearts').textContent='♥ '.repeat(run.health)+'♡ '.repeat(run.rules.hearts-run.health);$('hearts').setAttribute('aria-label',`${run.health} of ${run.rules.hearts} hearts`);$('shard-count').innerHTML=`${run.shards} <span>/ 3</span>`;$('mote-count').textContent=`✦ ${run.motes} / 7`;$('boost').hidden=run.boost===0;$('dash-meter').style.width=`${(1-run.dashCooldown/1.4)*100}%`;
-  $('objective-label').textContent=run.shards===3?'The gate is awake':'Restore the gate';$('objective-description').textContent=run.shards===3?'Step through the glowing portal':'Find the three light fragments';drawMap();
+  $('objective-label').textContent=run.shards===3?'EXIT OPEN!':'Collect 3 fragments';$('objective-description').textContent=run.shards===3?'Enter the green exit on the map':'Walk onto the blue marked tiles';drawMap();
 }
 const map=$('minimap'),mapCtx=map.getContext('2d');
 function drawMap(){const {grid,config,shards,motes,portal,checkpoint,ghosts}=run.world,n=config.size,cell=map.width/n;mapCtx.clearRect(0,0,map.width,map.height);
   for(let z=0;z<n;z++)for(let x=0;x<n;x++){mapCtx.fillStyle=grid[z][x]?'#29413e':'#617166';mapCtx.fillRect(x*cell,z*cell,cell-.5,cell-.5);}
   const dot=(p,color,r=cell*.22)=>{mapCtx.fillStyle=color;mapCtx.beginPath();mapCtx.arc((p.x+.5)*cell,(p.z+.5)*cell,r,0,Math.PI*2);mapCtx.fill();};
-  motes.filter(p=>!p.collected).forEach(p=>dot(p,'#e9c775',cell*.12));shards.filter(p=>!p.collected).forEach(p=>dot(p,config.accent,cell*.28));
+  motes.filter(p=>!p.collected).forEach(p=>dot(p,'#e9c775',cell*.12));
+  for(const p of shards.filter(p=>!p.collected)){
+    const x=(p.x+.5)*cell,z=(p.z+.5)*cell,r=cell*.35;
+    mapCtx.fillStyle='#36dfff';mapCtx.beginPath();mapCtx.moveTo(x,z-r);mapCtx.lineTo(x+r,z);mapCtx.lineTo(x,z+r);mapCtx.lineTo(x-r,z);mapCtx.closePath();mapCtx.fill();
+  }
   dot(checkpoint,run.checkpoint?config.accent:'#9bc4dd',cell*.23);ghosts.forEach(p=>dot(p,'#c79fe0',cell*.18));
   run.world.hazards.slice(0,run.rules.hazardCount).forEach(p=>dot(p,'#e29079',cell*.17));
-  mapCtx.strokeStyle=run.shards===3?config.accent:'#8ba392';mapCtx.lineWidth=2;mapCtx.strokeRect((portal.x+.15)*cell,(portal.z+.15)*cell,cell*.7,cell*.7);
+  mapCtx.strokeStyle=run.shards===3?'#92ff5f':'#8ba392';mapCtx.lineWidth=2;mapCtx.strokeRect((portal.x+.15)*cell,(portal.z+.15)*cell,cell*.7,cell*.7);
   dot(run.player,'#ffffff',cell*.28);
 }
 
@@ -150,7 +154,7 @@ function frame(now){const dt=lastFrame?Math.min((now-lastFrame)/1000,.05):.016;l
   scene.draw(scene.frameTime,dt,run);requestAnimationFrame(frame);
 }
 async function boot(){try{
-  const {AdventureScene}=await import('./scene.js');scene=new AdventureScene($('scene'));scene.reduced=save.reduced;scene.quality(save.quality);preview(selected);$('loading').hidden=true;requestAnimationFrame(frame);
+  const {AdventureScene}=await import('./scene.js?v=2.1.0');scene=new AdventureScene($('scene'));scene.reduced=save.reduced;scene.quality(save.quality);preview(selected);$('loading').hidden=true;requestAnimationFrame(frame);
   scene.renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();clearInput();paused=true;$('error').hidden=false;$('error-message').textContent='The graphics connection was interrupted. Reload to reopen the world. Completed worlds are saved.';});
   if(new URL(location.href).searchParams.has('guide'))guide();
 }catch(error){console.error('Unable to start Cube Man Adventure:',error);$('loading').hidden=true;$('error').hidden=false;$('lobby').hidden=true;$('play-button').disabled=true;$('error-message').textContent='This adventure needs WebGL. Try enabling hardware acceleration or opening it in a recent Chrome, Edge, Firefox, or Safari browser.';}}

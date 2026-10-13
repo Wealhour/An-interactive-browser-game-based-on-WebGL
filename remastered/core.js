@@ -5,9 +5,9 @@ export const WORLDS = [
   { name: 'The Astral Garden', short: 'Astral Garden', subtitle: 'One last path through the stars.', tag: '03 / THE HOMECOMING', size: 19, seed: 2026, par: 180, ground: '#575f89', wall: '#a5a6ce', leaf: '#8272b5', accent: '#b8baff', sky: '#20243d', story: 'The last gate waits in a garden between stars. Bring its scattered light together. Home is close.' }
 ];
 export const DIFFICULTIES = {
-  explorer: { name: 'Explorer', hearts: 5, speed: 3.1, ghostSpeed: 0.55, hazardCount: 1, description: 'Five hearts. A gentler journey.' },
-  adventure: { name: 'Adventurer', hearts: 3, speed: 3.1, ghostSpeed: 0.85, hazardCount: 2, description: 'Three hearts. A little more mystery.' },
-  expert: { name: 'Wayfinder', hearts: 2, speed: 3.1, ghostSpeed: 1.15, hazardCount: 3, description: 'Two hearts. For the quickest feet.' }
+  explorer: { name: 'Easy', hearts: 5, speed: 3.1, ghostSpeed: 0.55, hazardCount: 1, description: '5 hearts · slow ghosts' },
+  adventure: { name: 'Normal', hearts: 3, speed: 3.1, ghostSpeed: 0.85, hazardCount: 2, description: '3 hearts · normal ghosts' },
+  expert: { name: 'Hard', hearts: 2, speed: 3.1, ghostSpeed: 1.15, hazardCount: 3, description: '2 hearts · fast ghosts' }
 };
 export function random(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 export function neighbors(grid, cell) {
@@ -63,7 +63,8 @@ export function createWorld(index = 0) {
   const ghosts = Array.from({length:3+index},()=>{
     const origin=pick(7), route=[origin]; let prev=null, p=origin;
     for(let i=0;i<5;i++) { const opts=neighbors(grid,p).filter(c=>!prev||c.x!==prev.x||c.z!==prev.z); if(!opts.length)break; const next=opts[Math.floor(rng()*opts.length)];route.push(next);prev=p;p=next; }
-    return {x:origin.x,z:origin.z,route,target:1,direction:1};
+    const next=route[1]||origin;
+    return {x:origin.x,z:origin.z,route,target:1,direction:1,heading:Math.atan2(next.x-origin.x,next.z-origin.z)};
   });
   const hazards=Array.from({length:3},()=>pick(7));
   return {index,config,grid,start,portal,shards,motes,ghosts,hazards,checkpoint};
@@ -72,9 +73,19 @@ export function canStand(grid,x,z,radius=0.21) {
   for (const [dx,dz] of [[-radius,-radius],[radius,-radius],[-radius,radius],[radius,radius]]) if(grid[Math.floor(z+dz+0.5)]?.[Math.floor(x+dx+0.5)]!==0)return false;
   return true;
 }
-export function move(grid,player,dx,dz) {
+export function move(grid,player,dx,dz,onStep) {
   const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/0.12));
-  for(let i=0;i<steps;i++) { if(canStand(grid,player.x+dx/steps,player.z))player.x+=dx/steps; if(canStand(grid,player.x,player.z+dz/steps))player.z+=dz/steps; }
+  for(let i=0;i<steps;i++) {
+    if(canStand(grid,player.x+dx/steps,player.z))player.x+=dx/steps;
+    if(canStand(grid,player.x,player.z+dz/steps))player.z+=dz/steps;
+    onStep?.(player);
+  }
+}
+export function touchesPickup(player,pickup) {
+  // Entering the marked floor tile counts, even when walking around its corner.
+  // The modest extra reach also lets the character's body touch a pickup.
+  const sameTile=Math.floor(player.x+0.5)===pickup.x&&Math.floor(player.z+0.5)===pickup.z;
+  return sameTile||Math.hypot(player.x-pickup.x,player.z-pickup.z)<=0.58;
 }
 export function createRun(index,difficulty='adventure') {
   const world=createWorld(index), rules=DIFFICULTIES[difficulty]||DIFFICULTIES.adventure;
@@ -89,14 +100,20 @@ export function tick(run,input,dt) {
   if(input.dash&&run.dashCooldown===0&&len>0){run.dash=0.16;run.dashCooldown=1.4;run.events.push({type:'dash'});}
   const speed=run.dash>0?8:run.rules.speed*(run.boost>0?1.45:1);
   if(run.dash>0){x=run.dashVector.x;z=run.dashVector.z;}
-  move(run.world.grid,run.player,x*speed*dt,z*speed*dt);
+  const collect=()=>{
+    for(const shard of run.world.shards) if(!shard.collected&&touchesPickup(run.player,shard)) {shard.collected=true;run.shards++;run.events.push({type:'shard',count:run.shards});}
+    for(const mote of run.world.motes) if(!mote.collected&&touchesPickup(run.player,mote)) {mote.collected=true;run.motes++;run.boost=3;run.events.push({type:'mote'});}
+  };
+  collect();
+  // Check actual collision-constrained substeps, rather than only the endpoint
+  // of a dash. Pickups behind a wall are never reached by this traversal.
+  move(run.world.grid,run.player,x*speed*dt,z*speed*dt,collect);
   const near=(p,r=0.52)=>Math.hypot(p.x-run.player.x,p.z-run.player.z)<r;
-  for(const shard of run.world.shards) if(!shard.collected&&near(shard)) {shard.collected=true;run.shards++;run.events.push({type:'shard',count:run.shards});}
-  for(const mote of run.world.motes) if(!mote.collected&&near(mote)) {mote.collected=true;run.motes++;run.boost=3;run.events.push({type:'mote'});}
   if(!run.checkpoint&&near(run.world.checkpoint)){run.checkpoint=true;run.respawn={...run.world.checkpoint};run.health=run.rules.hearts;run.events.push({type:'checkpoint'});}
   for(const ghost of run.world.ghosts) {
     if(ghost.route.length<2)continue;
     const target=ghost.route[ghost.target], dx=target.x-ghost.x,dz=target.z-ghost.z,d=Math.hypot(dx,dz),step=run.rules.ghostSpeed*dt;
+    if(d>0&&step>0)ghost.heading=Math.atan2(dx,dz);
     if(d<=step){ghost.x=target.x;ghost.z=target.z;if(ghost.target===ghost.route.length-1)ghost.direction=-1;if(ghost.target===0)ghost.direction=1;ghost.target+=ghost.direction;}
     else {ghost.x+=dx/d*step;ghost.z+=dz/d*step;}
   }
