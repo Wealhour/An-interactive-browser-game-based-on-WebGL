@@ -22,20 +22,30 @@ The experience is designed for a short browser visit: immediate play, a clear go
 
 ## Validation performed
 
-- Fourteen Node tests cover world determinism, connectedness, reachable objectives, patrol routes, collision, frame-rate consistency, diagonal speed, dash cooldown, collectible consumption, checkpoint healing, damage, invulnerability, loss, locked exits, star criteria, and completion of all nine world/difficulty combinations through simulated movement. Regression cases exercise legal fragment-tile edges and corners in all three worlds, collection through walls, and ghost facing in all four travel directions.
+- Twenty-four Node tests cover world determinism, connectedness, reachable objectives, patrol routes, collision, frame-rate consistency, diagonal speed, dash cooldown, collectible consumption, checkpoint healing, damage, invulnerability, loss, locked exits, star criteria, fragment-tile edges and corners, collection through walls, and ghost facing in all four travel directions.
+- Feasibility regression tests complete 216 runs with the actual ghosts, mushrooms, damage, pickups, and checkpoint rules enabled: all three worlds × three difficulties × three frame rates (20, 60, 120) × four starting patrol phases (0, 2.9, 9.7, 31.3 seconds) × two steering offsets (centered and 0.18 cells). Every run finishes with all fragments, full hearts, zero hits, and no dash. The tests never override player position, health, immunity, or world objects.
+- A separate static audit blocks every cell of every patrol and all mushrooms simultaneously. Every remaining floor tile and every objective must be connected, with clearance from patrol segments. This checks arbitrary patrol phases, safe waiting, optional pickups, and alternate approaches rather than just one successful timed run.
 - Chrome browser checks cover actual WebGL rendering; keyboard movement; pause and resume; frozen pause time; camera toggle; graphics and reduced-motion settings; mobile layout at 390 × 844; pointer controls using touch events; every victory screen; immediate access to all worlds; and persistence after reload.
-- The integration harness places the player at objectives to check completion UI and saving. Separate simulation tests traverse routes through actual movement. Neither adds debug hooks to production files.
+- The UI integration harness places the player at objectives to check completion UI and saving; it is not a playability test. Separate hazard-enabled simulation and keyboard playthroughs verify completion through actual movement. Neither adds debug hooks to production files.
 - Recovery checks cover malformed storage, unavailable storage, and unavailable WebGL.
 - The remaster produced no browser console errors during the browser integration checks.
 - The original archive launched in Chrome, loaded its 3D scene and physics worker, and produced no uncaught script errors.
 - SHA-256 validation confirms all 57 original files match their incoming bytes.
 - Screenshots of the title, gameplay, mobile layout, both later worlds, and original were visually inspected.
 
-Optional browser checks use `node scripts/browser-integration.mjs` with Playwright and Chrome installed. `node scripts/keyboard-playthrough.mjs` drives actual keyboard input through the mazes, collects all fragments, enters the exits, and compares rendered ghost facing against movement. Its test-only invulnerability isolates navigation from hazard damage; it does not teleport the player or fabricate collection/completion events. `PLAYWRIGHT_PATH` can point to an existing Playwright `index.mjs`; `QA_URL` can select another preview origin or subpath. Set `QA_WRITE_PREVIEW=1` explicitly to replace the documentation screenshot. The normal game and Node test suite require no package installation.
+Optional browser checks use `node scripts/browser-integration.mjs` with Playwright and Chrome installed. `node scripts/keyboard-playthrough.mjs` drives actual keyboard input through all three worlds on Normal, Hard, and Easy, collects all fragments, enters the exits, and compares rendered ghost facing against movement. It waits for spawn protection to expire, keeps all hazards active, and requires zero hits and full hearts. State observation uses test-only intercepted module exports; all movement uses keyboard events. `QA_DIFFICULTIES=adventure,expert,explorer` selects difficulties. `PLAYWRIGHT_PATH` can point to an existing Playwright `index.mjs`; `QA_URL` can select another preview origin or subpath. Set `QA_WRITE_PREVIEW=1` explicitly to replace the documentation screenshot. The normal game and Node test suite require no package installation.
 
 ## Version 2.1 fixes
 
 The old circular pickup radius was smaller than a floor tile: legal movement near the tile's edges or corners could miss a fragment. Collection now covers entry anywhere on the marked tile and is checked during collision-constrained movement substeps, including a dash. Blue crystals have fixed blue ground markers; similarly colored wall decorations were removed. Patrols track their travel heading and the ghost mesh rotates to match it. All worlds are available immediately, and saved times and ratings are retained. Versioned module and stylesheet URLs prevent browsers from combining cached old game logic with the new interface.
+
+## Version 2.2 passage fairness
+
+The earlier navigation checks removed hazards or used test-only invulnerability. They demonstrated movement and collection, but did not establish that the live levels were fair. The World 2 report exposed this gap. An audit also found patrols crossing a World 1 exit, a World 2 fragment and checkpoint, and World 3 objectives. Mushrooms could block narrow corridors too.
+
+Patrols and mushrooms now stay away from spawn, checkpoint, fragments, and exit. Threat placement cannot form an impenetrable barrier. After placement, the generator connects all safe corridor components with short connections, opening 3 extra wall tiles in World 1, 2 in World 2, and 6 in World 3. The result keeps the seeded maze and objective positions while adding permanent bypasses. Ghosts retain their patrols, collision damage, and difficulty-dependent speeds; the player can use a bypass instead of relying on precise timing, dash protection, or a sacrificed heart. All optional starlight remains reachable as well.
+
+The hazard-enabled feasibility tests run in the required GitHub Pages verification job before deployment, preventing the same class of blocked layout from silently returning. The keyboard harness no longer overrides invulnerability.
 
 ## Scope and verification limits
 

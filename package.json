@@ -1,6 +1,6 @@
 {
   "name": "cube-man-adventure-remastered",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
   "description": "A preserved student project and a new WebGL adventure by Weihao Wang, remastered with ChatGPT / OpenAI Codex.",

@@ -51,7 +51,7 @@ test('last heart ends a run; completed runs cannot continue advancing',()=>{
 test('golden starlight boosts speed for three seconds and is consumed once',()=>{
   const r=openRun();r.world.motes=[{x:3,z:3,collected:false}];tick(r,{},.016);assert.equal(r.motes,1);assert.equal(r.boost,3);tick(r,{},.016);assert.equal(r.motes,1);assert.ok(r.boost<3);
 });
-test('each world can be completed using real movement in every difficulty',()=>{
+test('basic navigation reaches the exit in every world and difficulty (hazards tested separately)',()=>{
   for(let i=0;i<3;i++)for(const difficulty of Object.keys(DIFFICULTIES)){
     const r=createRun(i,difficulty);r.world.ghosts=[];r.world.hazards=[];
     for(const target of [...r.world.shards,r.world.portal]){

@@ -30,6 +30,43 @@ export function findPath(grid, start, end) {
   }
   return [];
 }
+// Treat the entire patrol, at every possible phase, as occupied. This is a
+// conservative walking map: neither a well-timed dash nor losing a heart is
+// required to reach an objective. All mushrooms are included, even on Easy.
+export function safeNavigationGrid(world) {
+  const grid=world.grid.map(row=>row.slice());
+  for(const p of [...world.ghosts.flatMap(ghost=>ghost.route),...world.hazards])grid[p.z][p.x]=1;
+  return grid;
+}
+function connectSafePassages(world) {
+  const safe=safeNavigationGrid(world),n=safe.length;
+  let reachable=distances(safe,world.start).result;
+  // Join safe corridor components with the fewest removed wall tiles. A
+  // patrol remains a tempting shortcut, with a permanent walkable bypass.
+  while(reachable.size<safe.flat().filter(cell=>cell===0).length) {
+    const costs=new Map(),parents=new Map(),queue=[];
+    for(const key of reachable.keys()){costs.set(key,0);queue.push(key);}
+    let end=null;
+    while(queue.length){
+      queue.sort((a,b)=>costs.get(a)-costs.get(b));
+      const key=queue.shift(),[x,z]=key.split(',').map(Number);
+      if(safe[z][x]===0&&!reachable.has(key)){end=key;break;}
+      for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
+        const nx=x+dx,nz=z+dz,next=`${nx},${nz}`;
+        if(nx<1||nz<1||nx>=n-1||nz>=n-1)continue;
+        // An original floor tile blocked in the safe map belongs to a threat.
+        if(world.grid[nz][nx]===0&&safe[nz][nx]===1)continue;
+        const cost=costs.get(key)+(world.grid[nz][nx]===1?1:0);
+        if(!costs.has(next)||cost<costs.get(next)){costs.set(next,cost);parents.set(next,key);if(!queue.includes(next))queue.push(next);}
+      }
+    }
+    if(!end)throw new Error(`No safe bypass in world ${world.index+1}`);
+    for(let key=end;key&&!reachable.has(key);key=parents.get(key)){
+      const [x,z]=key.split(',').map(Number);world.grid[z][x]=0;safe[z][x]=0;
+    }
+    reachable=distances(safe,world.start).result;
+  }
+}
 export function createWorld(index = 0) {
   const config = WORLDS[index], n = config.size, rng = random(config.seed);
   const grid = Array.from({length:n}, () => Array(n).fill(1));
@@ -46,28 +83,44 @@ export function createWorld(index = 0) {
   const sorted = [...cells].sort((a,b)=>result.get(`${b.x},${b.z}`)-result.get(`${a.x},${a.z}`));
   const portal = sorted[0];
   const chosen = [start,portal];
-  const pick = (minDistance=2) => {
+  const pick = (minDistance=2,allowed=()=>true) => {
     let best = null, score = -1;
     for (const cell of cells) {
       const separation = Math.min(...chosen.map(p=>Math.hypot(p.x-cell.x,p.z-cell.z)));
-      if (result.get(`${cell.x},${cell.z}`) < minDistance) continue;
+      if (result.get(`${cell.x},${cell.z}`) < minDistance||!allowed(cell)) continue;
       const value = separation + rng()*0.35;
       if (value>score) {best=cell; score=value;}
     }
+    if(!best)throw new Error(`No valid object placement in world ${index+1}`);
     chosen.push(best); return {...best};
   };
   const shards = Array.from({length:3},()=>({...pick(4),collected:false}));
   const checkpoint = {...findPath(grid,start,portal)[Math.floor(findPath(grid,start,portal).length*0.45)]};
   chosen.push(checkpoint);
   const motes = Array.from({length:7},()=>({...pick(3),collected:false}));
+  const protectedGoals=[start,portal,checkpoint,...shards];
+  const occupied=new Set(),key=p=>`${p.x},${p.z}`;
+  const clearOfGoals=p=>protectedGoals.every(goal=>Math.hypot(p.x-goal.x,p.z-goal.z)>=2)&&motes.every(goal=>key(p)!==key(goal));
+  // Never build a ring or a boundary-to-boundary barrier of threats. Check
+  // the whole interior before carving so every isolated corridor can get a
+  // bypass, including optional starlight and checkpoint approaches.
+  const leavesRoomForBypass=p=>{
+    if(!clearOfGoals(p)||occupied.has(key(p)))return false;
+    const interior=grid.map((row,z)=>row.map((_,x)=>x===0||z===0||x===n-1||z===n-1||occupied.has(`${x},${z}`)||key(p)===`${x},${z}`?1:0));
+    return distances(interior,start).cells.length===interior.flat().filter(cell=>cell===0).length;
+  };
   const ghosts = Array.from({length:3+index},()=>{
-    const origin=pick(7), route=[origin]; let prev=null, p=origin;
-    for(let i=0;i<5;i++) { const opts=neighbors(grid,p).filter(c=>!prev||c.x!==prev.x||c.z!==prev.z); if(!opts.length)break; const next=opts[Math.floor(rng()*opts.length)];route.push(next);prev=p;p=next; }
+    const origin=pick(7,p=>leavesRoomForBypass(p)&&neighbors(grid,p).some(next=>clearOfGoals(next)&&!occupied.has(key(next)))), route=[origin]; let p=origin;
+    occupied.add(key(origin));
+    for(let i=0;i<5;i++) { const opts=neighbors(grid,p).filter(leavesRoomForBypass); if(!opts.length)break; const next=opts[Math.floor(rng()*opts.length)];route.push(next);occupied.add(key(next));p=next; }
+    if(route.length<2)throw new Error(`Stationary patrol in world ${index+1}`);
     const next=route[1]||origin;
     return {x:origin.x,z:origin.z,route,target:1,direction:1,heading:Math.atan2(next.x-origin.x,next.z-origin.z)};
   });
-  const hazards=Array.from({length:3},()=>pick(7));
-  return {index,config,grid,start,portal,shards,motes,ghosts,hazards,checkpoint};
+  const hazards=Array.from({length:3},()=>{const p=pick(7,leavesRoomForBypass);occupied.add(key(p));return p;});
+  const world={index,config,grid,start,portal,shards,motes,ghosts,hazards,checkpoint};
+  connectSafePassages(world);
+  return world;
 }
 export function canStand(grid,x,z,radius=0.21) {
   for (const [dx,dz] of [[-radius,-radius],[radius,-radius],[-radius,radius],[radius,radius]]) if(grid[Math.floor(z+dz+0.5)]?.[Math.floor(x+dx+0.5)]!==0)return false;

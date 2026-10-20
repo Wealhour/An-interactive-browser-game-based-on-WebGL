@@ -1,5 +1,5 @@
 import * as THREE from './vendor/three.module.js';
-import { random } from './core.js?v=2.1.0';
+import { random } from './core.js?v=2.2.0';
 
 export class AdventureScene {
   constructor(container) {
